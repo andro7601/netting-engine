@@ -25,9 +25,9 @@ public class OptimizationRequestEntity {
     @UuidGenerator
     private UUID id;
 
-    private Long maxMargin;
-    private Long totalMarginUsed;
-    private Long totalExpectedPnl;
+    private int maxMargin;
+    private int totalMarginUsed;
+    private int totalExpectedPnl;
 
     @CreationTimestamp
     private Instant createdAt;

@@ -3,6 +3,7 @@ package com.engine.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +23,10 @@ public class TradeEntity {
     private UUID id;
 
     private String tradeName;
-    private long marginRequired;
-    private long expectedPnl;
+    private int marginRequired;
+    private int expectedPnl;
+    private boolean selected;
+
+    @ManyToOne
+    private OptimizationRequestEntity request;
 }
