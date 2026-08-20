@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Trade{
+public class TradeEntity {
     @Id
     @UuidGenerator
     private UUID id;

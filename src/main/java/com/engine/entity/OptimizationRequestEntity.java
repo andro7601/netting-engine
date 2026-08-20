@@ -19,7 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "optimization_requests")
 @Data
-public class OptimizationRequest{
+public class OptimizationRequestEntity {
 
     @Id
     @UuidGenerator
@@ -33,5 +33,5 @@ public class OptimizationRequest{
     private Instant createdAt;
 
     @OneToMany
-    private List<Trade> trades;
+    private List<TradeEntity> tradeEntities;
 }
