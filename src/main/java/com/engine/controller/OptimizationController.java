@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,11 +27,14 @@ public class OptimizationController {
     }
 
     @GetMapping("/{requestId}")
-    public ResponseEntity<ResponseDto> getOptimized(@RequestParam UUID requestId) {
-        ResponseDto responseDto = optimizationService.getOptimized(requestId);
-        return ResponseEntity.ok().body(responseDto);
+    public ResponseEntity<ResponseDto> getOptimized(@PathVariable UUID requestId) {
+        return ResponseEntity.ok().body(optimizationService.getOptimized(requestId));
     }
 
+    @GetMapping
+    public ResponseEntity<List<ResponseDto>> getAll(){
+        return ResponseEntity.ok().body(optimizationService.getAll());
+    }
 
 
 }

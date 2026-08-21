@@ -55,7 +55,7 @@ public class OptimizationService {
             return tradeEntity;
         }).toList();
 
-        OptimizationRequestEntity flushedRequestEntity = optimizationRequestRepository.save(requestEntity);
+        OptimizationRequestEntity flushedRequestEntity = optimizationRequestRepository.saveAndFlush(requestEntity);
         tradeRepository.saveAll(tradeEntities);
         //not 100% flushed generates are done at hibernate level,not db level
 
