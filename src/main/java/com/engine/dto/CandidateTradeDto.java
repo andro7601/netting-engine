@@ -1,4 +1,4 @@
-package com.engine.Dto;
+package com.engine.dto;
 
 public record CandidateTradeDto(
         String tradeName,
