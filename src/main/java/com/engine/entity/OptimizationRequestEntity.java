@@ -1,9 +1,6 @@
 package com.engine.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,8 +27,9 @@ public class OptimizationRequestEntity {
     private int totalExpectedPnl;
 
     @CreationTimestamp
+    @Column(updatable = false)
     private Instant createdAt;
 
-    @OneToMany
+    @OneToMany(mappedBy = "optimizationRequestEntity")
     private List<TradeEntity> tradeEntities;
 }
