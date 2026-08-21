@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 import java.util.UUID;
 
@@ -27,4 +28,5 @@ public class TradeEntity {
     @ManyToOne
     @JoinColumn(name = "request_id")
     private OptimizationRequestEntity optimizationRequestEntity;
+
 }

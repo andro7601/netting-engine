@@ -10,6 +10,7 @@ import com.engine.exception.NotFoundException;
 import com.engine.repository.OptimizationRequestRepository;
 import com.engine.repository.TradeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,7 +56,7 @@ public class OptimizationService {
         }).toList();
 
         OptimizationRequestEntity flushedRequestEntity = optimizationRequestRepository.save(requestEntity);
-        List<TradeEntity> flushedTradeEntities = tradeRepository.saveAll(tradeEntities);
+        tradeRepository.saveAll(tradeEntities);
         //not 100% flushed generates are done at hibernate level,not db level
 
         ResponseDto responseDto = new ResponseDto(flushedRequestEntity.getId(), result.stream().toList(), totalMarginUsed, totalPnlExpected, flushedRequestEntity.getCreatedAt());
@@ -68,10 +69,12 @@ public class OptimizationService {
         OptimizationRequestEntity requestEntity = optimizationRequestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("No request with id: " + requestId));
 
-        List<CandidateTradeDto> tradeDtos = requestEntity.getTradeEntities().stream().filter(entity -> entity.isSelected()).map(entity -> {
-            CandidateTradeDto candidateTradeDto = new CandidateTradeDto(entity.getTradeName(), entity.getMarginRequired(), entity.getExpectedPnl());
-            return candidateTradeDto;
-        }).toList();
+        List<CandidateTradeDto> tradeDtos = requestEntity.getTradeEntities().stream()
+                .filter(TradeEntity::isSelected)
+                .map(entity -> {
+                    CandidateTradeDto candidateTradeDto = new CandidateTradeDto(entity.getTradeName(), entity.getMarginRequired(), entity.getExpectedPnl());
+                    return candidateTradeDto;
+                }).toList();
 
         ResponseDto responseDto = new ResponseDto(
                 requestId,
@@ -81,5 +84,27 @@ public class OptimizationService {
                 requestEntity.getCreatedAt()
         );
         return responseDto;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ResponseDto> getAll() {
+        List<OptimizationRequestEntity> requestEntities = optimizationRequestRepository.findAll();
+        return requestEntities.stream().map(entity ->
+                new ResponseDto(
+                        entity.getId(),
+                        entity.getTradeEntities().stream()
+                                .filter(TradeEntity::isSelected)
+                                .map(candidateEntity ->
+                                        new CandidateTradeDto(
+                                                candidateEntity.getTradeName(),
+                                                candidateEntity.getMarginRequired(),
+                                                candidateEntity.getExpectedPnl()
+                                        )
+                                ).toList(),
+                        entity.getTotalMarginUsed(),
+                        entity.getTotalExpectedPnl(),
+                        entity.getCreatedAt()
+                )
+        ).toList();
     }
 }
