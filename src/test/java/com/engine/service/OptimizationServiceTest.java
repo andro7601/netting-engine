@@ -2,7 +2,6 @@ package com.engine.service;
 
 import com.engine.dto.CandidateTradeDto;
 import com.engine.dto.RequestDto;
-import com.engine.dto.ResponseDto;
 import com.engine.repository.OptimizationRequestRepository;
 import com.engine.repository.TradeRepository;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
@@ -36,14 +34,14 @@ public class OptimizationServiceTest {
                 new CandidateTradeDto("Trade Delta", 8, 160)
         ));
 
-        when(optimizationRequestRepository.save(any()))
+        when(optimizationRequestRepository.saveAndFlush(any()))
                 .thenAnswer(inv -> inv.getArgument(0));
         when(tradeRepository.saveAll(anyList()))
                 .thenAnswer(inv -> inv.getArgument(0));
 
-        ResponseDto response = optimizationService.optimize(requestDto);
+        optimizationService.optimize(requestDto);
 
-        verify(optimizationRequestRepository, times(1)).save(any());
+        verify(optimizationRequestRepository, times(1)).saveAndFlush(any());
         verify(tradeRepository, times(1)).saveAll(anyList());
 
     }

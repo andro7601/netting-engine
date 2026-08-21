@@ -1,8 +1,10 @@
 package com.engine.repository;
 
 import com.engine.entity.OptimizationRequestEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,5 +18,5 @@ public interface OptimizationRequestRepository extends JpaRepository<Optimizatio
     Optional<OptimizationRequestEntity> findById(UUID id);
 
     @EntityGraph(attributePaths = "tradeEntities")
-    List<OptimizationRequestEntity> findAll();
+    List<OptimizationRequestEntity> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }

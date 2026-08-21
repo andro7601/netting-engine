@@ -32,8 +32,11 @@ public class OptimizationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ResponseDto>> getAll(){
-        return ResponseEntity.ok().body(optimizationService.getAll());
+    public ResponseEntity<List<ResponseDto>> getAllSorted(
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        return ResponseEntity.ok().body(optimizationService.getAllSorted(page,size));
     }
 
 

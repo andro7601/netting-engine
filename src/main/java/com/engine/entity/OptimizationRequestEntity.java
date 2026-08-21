@@ -31,6 +31,4 @@ public class OptimizationRequestEntity {
 
     @OneToMany(mappedBy = "optimizationRequestEntity")
     private List<TradeEntity> tradeEntities;
-
-
 }
