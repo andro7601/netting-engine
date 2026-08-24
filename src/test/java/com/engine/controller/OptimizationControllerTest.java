@@ -65,7 +65,7 @@ public class OptimizationControllerTest {
 
         when(optimizationService.optimize(any())).thenReturn(new ResponseDto(
                 null,
-                null,
+                List.of(),
                 0,
                 0,
                 null));
@@ -73,7 +73,7 @@ public class OptimizationControllerTest {
         List<CandidateTradeDto> candidates = List.of(
 
         );
-        RequestDto fakeRequest = new RequestDto(9, List.of(
+        RequestDto fakeRequest = new RequestDto(4, List.of(
                 new CandidateTradeDto("first", 5, 40),
                 new CandidateTradeDto("second", 20, 80)));
 
@@ -82,6 +82,6 @@ public class OptimizationControllerTest {
                 .body(fakeRequest)
                 .exchange()
                 .expectStatus()
-                .isCreated();
+                .isOk();
     }
 }

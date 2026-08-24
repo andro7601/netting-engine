@@ -24,6 +24,10 @@ public class OptimizationController {
     public ResponseEntity<ResponseDto> optimize(@Valid @RequestBody RequestDto requestDto) {
         ResponseDto responseDto = optimizationService.optimize(requestDto);
         URI location = URI.create("/api/v1/trades/" + responseDto.requestId());
+
+        if(responseDto.selectedTrades().isEmpty()){
+            return ResponseEntity.ok().body(responseDto);
+        }
         return ResponseEntity.created(location).body(responseDto);
     }
 
