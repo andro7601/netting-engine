@@ -2,6 +2,7 @@ package com.engine.service;
 
 import com.engine.dto.CandidateTradeDto;
 import com.engine.dto.RequestDto;
+import com.engine.exception.IllegalCandidateException;
 import com.engine.repository.OptimizationRequestRepository;
 import com.engine.repository.TradeRepository;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
@@ -44,5 +46,14 @@ public class OptimizationServiceTest {
         verify(optimizationRequestRepository, times(1)).saveAndFlush(any());
         verify(tradeRepository, times(1)).saveAll(anyList());
 
+    }
+
+    @Test
+    void rejectNonUnique(){
+        RequestDto requestDto = new RequestDto(15, List.of(
+                new CandidateTradeDto("Trade", 5, 120),
+                new CandidateTradeDto("Trade", 10, 200)
+        ));
+        assertThrows(IllegalCandidateException.class,()->optimizationService.optimize(requestDto));
     }
 }
