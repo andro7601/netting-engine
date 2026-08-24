@@ -6,6 +6,7 @@ import com.engine.dto.RequestDto;
 import com.engine.dto.ResponseDto;
 import com.engine.entity.OptimizationRequestEntity;
 import com.engine.entity.TradeEntity;
+import com.engine.exception.IllegalCandidateException;
 import com.engine.exception.NotFoundException;
 import com.engine.repository.OptimizationRequestRepository;
 import com.engine.repository.TradeRepository;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,10 @@ public class OptimizationService {
     public ResponseDto optimize(RequestDto requestDto) {
         int maxMargin = requestDto.maxMargin();
         List<CandidateTradeDto> inputTrades = requestDto.candidateTrades();
+
+        if (inputTrades.stream().map(CandidateTradeDto::tradeName).collect(Collectors.toSet()).size() != inputTrades.size()) {
+            throw new IllegalCandidateException("CandidateNames arent unique");
+        }
 
         HashSet<CandidateTradeDto> result = Algo.algorithm(requestDto);
 
@@ -58,10 +64,8 @@ public class OptimizationService {
 
         OptimizationRequestEntity flushedRequestEntity = optimizationRequestRepository.saveAndFlush(requestEntity);
         tradeRepository.saveAll(tradeEntities);
-        //not 100% flushed generates are done at hibernate level,not db level
 
         ResponseDto responseDto = new ResponseDto(flushedRequestEntity.getId(), result.stream().toList(), totalMarginUsed, totalPnlExpected, flushedRequestEntity.getCreatedAt());
-
         return responseDto;
     }
 
@@ -88,9 +92,9 @@ public class OptimizationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ResponseDto> getAllSorted(int page,int size) {
+    public List<ResponseDto> getAllSorted(int page, int size) {
 
-        Pageable pageable= PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size);
 
         List<OptimizationRequestEntity> requestEntities = optimizationRequestRepository.findAllByOrderByCreatedAtDesc(pageable);
 

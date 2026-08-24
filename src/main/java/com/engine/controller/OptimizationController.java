@@ -3,6 +3,7 @@ package com.engine.controller;
 import com.engine.dto.RequestDto;
 import com.engine.dto.ResponseDto;
 import com.engine.service.OptimizationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class OptimizationController {
     private final OptimizationService optimizationService;
 
     @PostMapping("/optimize")
-    public ResponseEntity<ResponseDto> optimize(@RequestBody RequestDto requestDto) {
+    public ResponseEntity<ResponseDto> optimize(@Valid @RequestBody RequestDto requestDto) {
         ResponseDto responseDto = optimizationService.optimize(requestDto);
         URI location = URI.create("/api/v1/trades/" + responseDto.requestId());
         return ResponseEntity.created(location).body(responseDto);
