@@ -2,7 +2,7 @@ package com.engine.service;
 
 import com.engine.dto.CandidateTradeDto;
 import com.engine.dto.RequestDto;
-import com.engine.exception.IllegalCandidateException;
+import com.engine.exception.InvalidArgumentException;
 import com.engine.repository.OptimizationRequestRepository;
 import com.engine.repository.TradeRepository;
 import org.junit.jupiter.api.Test;
@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -29,11 +30,11 @@ public class OptimizationServiceTest {
 
     @Test
     void requestAndTradesSaved() {
-        RequestDto requestDto = new RequestDto(15, List.of(
-                new CandidateTradeDto("Trade Alpha", 5, 120),
-                new CandidateTradeDto("Trade Beta", 10, 200),
-                new CandidateTradeDto("Trade Gamma", 3, 80),
-                new CandidateTradeDto("Trade Delta", 8, 160)
+        RequestDto requestDto = new RequestDto(new BigDecimal("15"), List.of(
+                new CandidateTradeDto("Trade Alpha", new BigDecimal("5"), new BigDecimal("120")),
+                new CandidateTradeDto("Trade Beta", new BigDecimal("10"), new BigDecimal("200")),
+                new CandidateTradeDto("Trade Gamma", new BigDecimal("3"), new BigDecimal("80")),
+                new CandidateTradeDto("Trade Delta", new BigDecimal("8"), new BigDecimal("160"))
         ));
 
         when(optimizationRequestRepository.saveAndFlush(any()))
@@ -50,10 +51,10 @@ public class OptimizationServiceTest {
 
     @Test
     void rejectNonUnique(){
-        RequestDto requestDto = new RequestDto(15, List.of(
-                new CandidateTradeDto("Trade", 5, 120),
-                new CandidateTradeDto("Trade", 10, 200)
+        RequestDto requestDto = new RequestDto(new BigDecimal("15"), List.of(
+                new CandidateTradeDto("Trade", new BigDecimal("5"), new BigDecimal("120")),
+                new CandidateTradeDto("Trade", new BigDecimal("10"), new BigDecimal("200"))
         ));
-        assertThrows(IllegalCandidateException.class,()->optimizationService.optimize(requestDto));
+        assertThrows(InvalidArgumentException.class,()->optimizationService.optimize(requestDto));
     }
 }

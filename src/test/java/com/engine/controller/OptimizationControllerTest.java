@@ -8,14 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.client.RestTestClient;
-import org.testcontainers.shaded.org.bouncycastle.asn1.ocsp.Request;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -33,10 +31,10 @@ public class OptimizationControllerTest {
     @Test
     void badRequest() {
         List<CandidateTradeDto> candidates = List.of(
-                new CandidateTradeDto("Now", 5, 5),
-                new CandidateTradeDto("zebra", 89, 7)
+                new CandidateTradeDto("Now", new BigDecimal("5"), new BigDecimal("5")),
+                new CandidateTradeDto("zebra", new BigDecimal("89"), new BigDecimal("7"))
         );
-        RequestDto fakeRequest = new RequestDto(-54, candidates);
+        RequestDto fakeRequest = new RequestDto(new BigDecimal("-54"), candidates);
 
         restTestClient.post().uri("/api/v1/trades/optimize")
                 .body(fakeRequest)
@@ -48,10 +46,10 @@ public class OptimizationControllerTest {
     @Test
     void badCandidate() {
         List<CandidateTradeDto> candidates = List.of(
-                new CandidateTradeDto("Now", 5, 5),
-                new CandidateTradeDto("zebra", -5, 7)  // negative marginRequired, should fail
+                new CandidateTradeDto("Now", new BigDecimal("5"), new BigDecimal("5")),
+                new CandidateTradeDto("zebra", new BigDecimal("-5"), new BigDecimal("7"))  // negative marginRequired, should fail
         );
-        RequestDto fakeRequest = new RequestDto(9, candidates);
+        RequestDto fakeRequest = new RequestDto(new BigDecimal("9"), candidates);
 
         restTestClient.post().uri("/api/v1/trades/optimize")
                 .body(fakeRequest)
@@ -66,16 +64,16 @@ public class OptimizationControllerTest {
         when(optimizationService.optimize(any())).thenReturn(new ResponseDto(
                 null,
                 List.of(),
-                0,
-                0,
+                BigDecimal.ZERO,
+                BigDecimal.ZERO,
                 null));
 
         List<CandidateTradeDto> candidates = List.of(
 
         );
-        RequestDto fakeRequest = new RequestDto(4, List.of(
-                new CandidateTradeDto("first", 5, 40),
-                new CandidateTradeDto("second", 20, 80)));
+        RequestDto fakeRequest = new RequestDto(new BigDecimal("4"), List.of(
+                new CandidateTradeDto("first", new BigDecimal("5"), new BigDecimal("40")),
+                new CandidateTradeDto("second", new BigDecimal("20"), new BigDecimal("80"))));
 
 
         restTestClient.post().uri("/api/v1/trades/optimize")

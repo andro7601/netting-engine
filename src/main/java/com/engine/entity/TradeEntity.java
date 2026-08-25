@@ -7,9 +7,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
-@Table(name = "trades")
+@Table(
+        name = "trades",
+        indexes = {
+                @Index(name = "idx_trade_FK",columnList = "request_id"),
+                @Index(name = "idx_trade_selected",columnList = "selected")
+        }
+)
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,8 +27,8 @@ public class TradeEntity {
     private UUID id;
 
     private String tradeName;
-    private int marginRequired;
-    private int expectedPnl;
+    private BigDecimal marginRequired;
+    private BigDecimal expectedPnl;
     private boolean selected;
 
     @ManyToOne

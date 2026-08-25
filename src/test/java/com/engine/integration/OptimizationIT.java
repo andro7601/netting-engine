@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.client.RestTestClient;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @AutoConfigureRestTestClient
@@ -26,11 +27,11 @@ public class OptimizationIT {
 
     @Test
     void returnsCorrect() {
-        RequestDto requestDto = new RequestDto(15, List.of(
-                new CandidateTradeDto("Trade Alpha", 5, 120),
-                new CandidateTradeDto("Trade Beta", 10, 200),
-                new CandidateTradeDto("Trade Gamma", 3, 80),
-                new CandidateTradeDto("Trade Delta", 8, 160)
+        RequestDto requestDto = new RequestDto(new BigDecimal("15"), List.of(
+                new CandidateTradeDto("Trade Alpha", new BigDecimal("5"), new BigDecimal("120")),
+                new CandidateTradeDto("Trade Beta", new BigDecimal("10"), new BigDecimal("200")),
+                new CandidateTradeDto("Trade Gamma", new BigDecimal("3"), new BigDecimal("80")),
+                new CandidateTradeDto("Trade Delta", new BigDecimal("8"), new BigDecimal("160"))
         ));
 
         ResponseDto response = restTestClient.post().uri("/api/v1/trades/optimize")

@@ -27,8 +27,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
-    @ExceptionHandler(IllegalCandidateException.class)
-    public ResponseEntity<String> handleCandidateValid(IllegalCandidateException ex){
+    @ExceptionHandler(InvalidArgumentException.class)
+    public ResponseEntity<String> handleCandidateValid(InvalidArgumentException ex){
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 

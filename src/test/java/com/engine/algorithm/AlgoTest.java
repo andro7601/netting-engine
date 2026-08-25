@@ -3,9 +3,8 @@ package com.engine.algorithm;
 import com.engine.dto.CandidateTradeDto;
 import com.engine.dto.RequestDto;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.shaded.org.bouncycastle.cert.ocsp.Req;
-import org.testcontainers.shaded.org.bouncycastle.jcajce.provider.asymmetric.mldsa.MLDSAKeyFactorySpi;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 
@@ -17,19 +16,19 @@ public class AlgoTest {
     @Test
     void baseTest() {
         RequestDto requestDto = new RequestDto(
-                15,
+                new BigDecimal("15"),
                 List.of(
-                        new CandidateTradeDto("Trade Alpha", 5, 120),
-                        new CandidateTradeDto("Trade Beta", 10, 200),
-                        new CandidateTradeDto("Trade Gamma", 3, 80),
-                        new CandidateTradeDto("Trade Delta", 8, 160)
+                        new CandidateTradeDto("Trade Alpha", new BigDecimal("5"), new BigDecimal("120")),
+                        new CandidateTradeDto("Trade Beta", new BigDecimal("10"), new BigDecimal("200")),
+                        new CandidateTradeDto("Trade Gamma", new BigDecimal("3"), new BigDecimal("80")),
+                        new CandidateTradeDto("Trade Delta", new BigDecimal("8"), new BigDecimal("160"))
                 )
         );
         HashSet<CandidateTradeDto> result = Algo.algorithm(requestDto);
 
         HashSet<CandidateTradeDto> expected = new HashSet<>(List.of(
-                new CandidateTradeDto("Trade Beta", 10, 200),
-                new CandidateTradeDto("Trade Alpha", 5, 120)
+                new CandidateTradeDto("Trade Beta", new BigDecimal("10"), new BigDecimal("200")),
+                new CandidateTradeDto("Trade Alpha", new BigDecimal("5"), new BigDecimal("120"))
                 ));
         assertEquals(expected.size(), result.size());
         result.forEach(elem -> assertTrue(expected.contains(elem)));
@@ -38,16 +37,16 @@ public class AlgoTest {
     @Test
     void greedyCaseTest() {
         RequestDto requestDto = new RequestDto(
-                17,
+                new BigDecimal("17"),
                 List.of(
-                        new CandidateTradeDto("Small", 5, 250),
-                        new CandidateTradeDto("Big", 15, 400)
+                        new CandidateTradeDto("Small", new BigDecimal("5"), new BigDecimal("250")),
+                        new CandidateTradeDto("Big", new BigDecimal("15"), new BigDecimal("400"))
                 )
         );
         HashSet<CandidateTradeDto> result = Algo.algorithm(requestDto);
 
         HashSet<CandidateTradeDto> expected = new HashSet<>(List.of(
-                new CandidateTradeDto("Big", 15, 400)
+                new CandidateTradeDto("Big", new BigDecimal("15"), new BigDecimal("400"))
         ));
 
         assertEquals(expected.size(), result.size());
@@ -56,10 +55,10 @@ public class AlgoTest {
 
     @Test
     void returnEmpty() {
-        RequestDto requestDto = new RequestDto(8, List.of(
-                new CandidateTradeDto("Trade something", 10, 150),
-                new CandidateTradeDto("Trade another", 15, 400),
-                new CandidateTradeDto("Trade andAnother", 9, 90)
+        RequestDto requestDto = new RequestDto(new BigDecimal("8"), List.of(
+                new CandidateTradeDto("Trade something", new BigDecimal("10"), new BigDecimal("150")),
+                new CandidateTradeDto("Trade another", new BigDecimal("15"), new BigDecimal("400")),
+                new CandidateTradeDto("Trade andAnother", new BigDecimal("9"), new BigDecimal("90"))
         ));
 
         HashSet<CandidateTradeDto> result = Algo.algorithm(requestDto);

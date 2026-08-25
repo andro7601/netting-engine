@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -22,9 +23,9 @@ public class OptimizationRequestEntity {
     @UuidGenerator
     private UUID id;
 
-    private int maxMargin;
-    private int totalMarginUsed;
-    private int totalExpectedPnl;
+    private BigDecimal maxMargin;
+    private BigDecimal totalMarginUsed;
+    private BigDecimal totalExpectedPnl;
 
     @CreationTimestamp
     private Instant createdAt;

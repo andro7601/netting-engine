@@ -6,7 +6,7 @@ import com.engine.dto.RequestDto;
 import com.engine.dto.ResponseDto;
 import com.engine.entity.OptimizationRequestEntity;
 import com.engine.entity.TradeEntity;
-import com.engine.exception.IllegalCandidateException;
+import com.engine.exception.InvalidArgumentException;
 import com.engine.exception.NotFoundException;
 import com.engine.repository.OptimizationRequestRepository;
 import com.engine.repository.TradeRepository;
@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -30,25 +31,27 @@ public class OptimizationService {
 
     @Transactional
     public ResponseDto optimize(RequestDto requestDto) {
-        int maxMargin = requestDto.maxMargin();
-        List<CandidateTradeDto> inputTrades = requestDto.candidateTrades();
-
-        if (inputTrades.stream().map(CandidateTradeDto::tradeName).collect(Collectors.toSet()).size() != inputTrades.size()) {
-            throw new IllegalCandidateException("CandidateNames arent unique");
+        if (requestDto.candidateTrades().stream().map(CandidateTradeDto::tradeName).collect(Collectors.toSet()).size() != requestDto.candidateTrades().size()) {
+            throw new InvalidArgumentException("CandidateNames arent unique");
         }
+
+        BigDecimal maxMarginDecimal=requestDto.maxMargin();
+        List<CandidateTradeDto> inputTrades=requestDto.candidateTrades();
+
+
 
         HashSet<CandidateTradeDto> result = Algo.algorithm(requestDto);
 
-        int totalMarginUsed = 0;
-        int totalPnlExpected = 0;
+        BigDecimal totalMarginUsed = new BigDecimal("0");
+        BigDecimal totalPnlExpected = new BigDecimal("0");
 
         for (var e : result) {
-            totalMarginUsed += e.marginRequired();
-            totalPnlExpected += e.expectedPnl();
+            totalMarginUsed=totalMarginUsed.add(e.marginRequired());
+            totalPnlExpected=totalPnlExpected.add(e.expectedPnl());
         }
 
         OptimizationRequestEntity requestEntity = new OptimizationRequestEntity();
-        requestEntity.setMaxMargin(maxMargin);
+        requestEntity.setMaxMargin(maxMarginDecimal);
         requestEntity.setTotalExpectedPnl(totalPnlExpected);
         requestEntity.setTotalMarginUsed(totalMarginUsed);
 
