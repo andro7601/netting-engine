@@ -14,14 +14,7 @@ FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 RUN apk add --no-cache curl
 COPY --from=builder /app/target/netting-engine-0.0.1-SNAPSHOT.jar app.jar
-RUN cat > entrypoint.sh <<'EOF'
-#!/bin/sh
-set -e
-exec java \
+EXPOSE 8080
+ENTRYPOINT exec java \
   -Dspring.datasource.password="$(cat /run/secrets/POSTGRES_PASSWORD)" \
   -jar app.jar
-EOF
-RUN chmod +x entrypoint.sh
-
-EXPOSE 8080
-ENTRYPOINT ["./entrypoint.sh"]
